@@ -1,29 +1,36 @@
 .nav{
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    gap: 0.6rem;
+
+}
+
+.subNav{
     padding: 0.8rem 1rem;
     border-radius: 1rem;
     border:1px solid var(--grey-2);
     color: var(--grey-1);
-}
-
-.navList{
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
 }
 
-.clicked{
-    font-weight: bold;
-    color: black;
+.subNav input::file-selector-button{
+    /* border: 1px solid black; */
+    content: 'holaa';
 }
 
-.print{
-    padding: 0 0.2rem;
-    cursor: pointer;
+.navOptions{
+    flex-grow: 1;
+    justify-content: space-between;
 }
 
-.print:hover{
-    color: var(--black);
+.navList{
+    display: flex;
+    gap: 0.4rem;
 }
+
+.navStatus{
+    justify-self: flex-end;
+}
+

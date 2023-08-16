@@ -76,4 +76,8 @@ body{
     border: 1px solid var(--grey-1);
 }
 
+.clicked{
+    font-weight: bold;
+    color: black;
+}
 

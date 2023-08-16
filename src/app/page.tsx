@@ -4,7 +4,8 @@ export const metadata:Metadata = {
     description: 'Genera etiquetas con ZPL',
 }
 
-const Home = ()=>(
+const Home = ()=>{
+    return(
         <></>
-    )
+    )}
 export default Home;

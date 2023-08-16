@@ -1,3 +1,3 @@
-export {formatZpl} from './formatZpl';
-export {createZplFull} from './createZplFull';
-export {createZplFlex} from './createZplFlex';
+export {abrirOpciones,checkearOpciones} from './options'
+export {storeCbApiToken} from './storeCbApiToken'
+export {serializeArray} from './serializeArray'
