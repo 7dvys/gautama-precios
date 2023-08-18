@@ -26,7 +26,7 @@ export default function RootLayout({
         idProveedor:'none',
         colCodigo:0,
         colCosto:2,
-        iva:21,
+        iva:0,
         ivaIncluido:'no',
         ganancia:0,
         modificacion:0,
