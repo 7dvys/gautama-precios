@@ -9,7 +9,6 @@ import { CbProduct } from '@/types/contabiliumApi/types'
 import { getProducts, getVendors, getUser } from '@/utils/contabiliumApi'
 import { CbVendor } from '@/types/contabiliumApi/types/CbVendor'
 import { XlsxConfig } from '@/types/xlsx/types'
-import { MatchItems } from '@/types/precios'
 import { useMatchItems } from '@/hooks'
 
 export default function RootLayout({
@@ -66,3 +65,4 @@ export default function RootLayout({
         </html>
     )
 }
+
