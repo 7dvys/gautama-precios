@@ -1,94 +1,91 @@
 'use client'
-import { ChangeEvent,useState,useContext  } from "react";
+import { ChangeEvent,useState,useContext, useEffect  } from "react";
 import { rootContext } from "@/context";
 import {updateProducts} from '@/utils/contabiliumApi'
-import * as XLSX from 'xlsx' 
+import { readXlsx,promptCols,promptAllSheetOptions } from "@/utils/xlsx";
+import * as XLSX from 'xlsx';
 
-const XlsxNav = ()=>{
+const XlsxNav:React.FC = ()=>{
     const [xlsxFile,setXlsxFile] = useState<XLSX.WorkBook>({} as XLSX.WorkBook);
     const [selectedSheet,setSelectedSheet] = useState('none');
     const {setXlsxProducts,cbVendors,xlsxConfig,setXlsxConfig,matchItems,cbApiToken:apiToken} = useContext(rootContext);
 
-    const readXlsx = async (event:ChangeEvent<HTMLInputElement>)=>{
+    const SelectVendorOptions:React.FC = ()=>{
+        if(cbVendors)
+        return (
+            cbVendors.map(({NombreFantasia,Id},index)=>(
+                <option key={index} value={Id}>{NombreFantasia}</option>
+            ))
+        )
+    }
+
+    const SelectSheets:React.FC = ()=>{
+        if(xlsxFile.Sheets)
+        return (
+            <select onChange={changeSheetHandler} name="sheet" value={selectedSheet}>
+                <option value="none">hoja</option>
+                {xlsxFile.SheetNames.map((sheet,index)=>(<option key={index} value={sheet}>{sheet}</option>))}
+            </select>
+        )
+    }
+
+    const ButtonOptions:React.FC = ()=>{
+        const buttonTitle = `codigo|titulo|costo: ${xlsxConfig.colCodigo}|${xlsxConfig.colCosto}\niva: ${xlsxConfig.iva}\niva incluido: ${xlsxConfig.ivaIncluido}\nganancia: ${xlsxConfig.ganancia}\nmodificacion: ${xlsxConfig.modificacion}\nafecta a final: ${xlsxConfig.afecta}\nproveedor:${xlsxConfig.idProveedor}`
+
+        if(xlsxFile.Sheets)
+        return(
+            <button onClick={openXlsxOptions} title={buttonTitle}>configuracion</button>
+        )
+    }
+
+    const ButtonAcept:React.FC = ()=>{
+        if(matchItems && matchItems.cbProducts.length)
+        return (
+            <button onClick={()=>{
+                if(confirm('Actualizar precios?'))
+                updateProducts({matchItems,apiToken})
+            }}>aceptar</button>
+        )
+    }
+
+    const changeXlsxFileHandler = async(event:ChangeEvent<HTMLInputElement>)=>{
         if(event.target.files){
             const xlsxFile = event.target.files[0];
-            const data = await xlsxFile.arrayBuffer();
-            setXlsxFile(XLSX.read(data));
-            setSelectedSheet('none')
+            const xlsxData:XLSX.WorkBook = await readXlsx(xlsxFile);
+            setXlsxFile(xlsxData);
         }
+        setSelectedSheet('none');
     }
 
-    const putSheetOptions = (event:ChangeEvent<HTMLSelectElement>)=>{
-        if(event.target.value!='none'){
-            const colCodigo = getNumberForColLetter(prompt('Columna codigo: (En numero)','A')??'A')
-            const colCosto = getNumberForColLetter(prompt('Columna costo: (En numero)','C')??'C')
+    const changeSheetHandler = (event:ChangeEvent<HTMLSelectElement>)=>{
+        if(event.target.value !='none'){
+            const {colCodigo,colCosto} = promptCols()
             setXlsxConfig({...xlsxConfig,colCodigo:colCodigo,colCosto:colCosto})
-            setXlsxProducts(XLSX.utils.sheet_to_json(xlsxFile.Sheets[event.target.value],{header:1,defval:'_null'})) 
-        }else{
-            setXlsxConfig({...xlsxConfig})
-            setXlsxProducts(XLSX.utils.sheet_to_json(xlsxFile.Sheets[event.target.value],{header:1,defval:'_null'})) 
         }
-        setSelectedSheet(event.target.value)
+        setSelectedSheet(event.target.value);
     }
 
-    const putAllSheetOptions = ()=>{
-        const colCodigo = getNumberForColLetter(prompt('Columna codigo: (En numero)',xlsxConfig.colCodigo.toString())??'A')
-        const colCosto = getNumberForColLetter(prompt('Columna costo: (En numero)',xlsxConfig.colCosto.toString())??'C')
-        const iva = parseInt(prompt('Coloque Iva: (sin porcentaje)',xlsxConfig.iva.toString())??'21')
-        const IvaIncluido = prompt('Iva incluido en el costo?: (si/no)',xlsxConfig.ivaIncluido.toString())??'no'
-        const ganancia = parseInt(prompt('Coloque ganancia: (sin porcentaje)',xlsxConfig.ganancia.toString())??'0')
-        const modificacion = parseInt(prompt('Coloque modificacion: (+/- sin porcentaje)',xlsxConfig.modificacion.toString())??'0')
-        const afecta = prompt('la modificacion afecta al precio final?: (si/no)',xlsxConfig.afecta.toString())??'si'
-        setXlsxConfig({...xlsxConfig,iva:iva,ivaIncluido:IvaIncluido,ganancia:ganancia,modificacion:modificacion,afecta:afecta,colCodigo:colCodigo,colCosto:colCosto})
-    }
+    useEffect(()=>{
+        if(xlsxFile.Sheets)
+        setXlsxProducts(XLSX.utils.sheet_to_json(xlsxFile.Sheets[selectedSheet],{header:1,defval:'_null'})) 
+    },[selectedSheet])
 
-    const getNumberForColLetter = (colString:string)=>{
-        if(parseInt(colString))
-        return Number(colString);
-
-        colString = colString.toUpperCase();
-        const codigoAscii = colString.charCodeAt(0);
-        return codigoAscii - 65 + 1;
-    }
-
-    const putProveedor = (event:ChangeEvent<HTMLSelectElement>)=>{
-        setXlsxConfig({...xlsxConfig,idProveedor:event.target.value})
-    }
-
-    const confirmUpdate = ()=>{
-        if(confirm('Actualizar precios?'))
-        updateProducts({matchItems,apiToken}).then(()=>{alert('Productos actualizados!!')})
+    const openXlsxOptions = ()=>{
+        const allSheetOptions = promptAllSheetOptions(xlsxConfig);
+        setXlsxConfig({...xlsxConfig,...allSheetOptions})
     }
 
     return (
         <>
-            <select onChange={putProveedor}>
+            <select value={xlsxConfig.idProveedor} onChange={(event)=>{setXlsxConfig({...xlsxConfig,idProveedor:event.target.value})}}>
                 <option value={'none'}>proveedor</option>
-                {
-                    cbVendors?cbVendors.map(({NombreFantasia,Id},index)=>(
-                        <option key={index} value={Id}>{NombreFantasia}</option>
-                    )):''
-                }                
+                <SelectVendorOptions/>             
             </select>
-            <input onChange={readXlsx} type="file" name="xlsx file"/>
-            {
-            xlsxFile.Sheets?
-            <>
-            <select onChange={putSheetOptions}  name="sheet" value={selectedSheet}>
-                <option value="none">hoja</option>
-                {
-                xlsxFile.SheetNames.map((sheet,index)=>(
-                    <option key={index} value={sheet}>{sheet}</option>
-                ))
-                }
-            </select>
-            <button 
-            onClick={putAllSheetOptions}
-            title={`codigo|titulo|costo: ${xlsxConfig.colCodigo}|${xlsxConfig.colCosto}\niva: ${xlsxConfig.iva}\niva incluido: ${xlsxConfig.ivaIncluido}\nganancia: ${xlsxConfig.ganancia}\nmodificacion: ${xlsxConfig.modificacion}\nafecta a final: ${xlsxConfig.afecta}\nproveedor:${xlsxConfig.idProveedor}`}>configuracion</button>
-            </>
-            :''
-            }
-            {matchItems && matchItems.cbProducts.length?<button onClick={()=>{confirmUpdate()}}>aceptar</button>:''}
+
+            <input name="xlsxFile" type="file" onChange={changeXlsxFileHandler}/>
+            <SelectSheets/>
+            <ButtonOptions/>
+            <ButtonAcept/>
         </>
     )
 }

@@ -1,8 +1,7 @@
 'use client'
 import styles from '@/assets/styles/nav.module.css'
 import { useState } from 'react'
-import { NavLink } from '@/components'
-import { XlsxNav } from './XlsxNav'
+import { NavLink,XlsxNav } from '@/components'
 
 const Nav:React.FC = ()=>{
     const [currentTool,setCurrentTool] = useState('')    

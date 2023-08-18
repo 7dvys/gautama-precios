@@ -1,0 +1,1 @@
+export {genCostoPrecioAndFinal} from './genCostoPrecioAndFinal'

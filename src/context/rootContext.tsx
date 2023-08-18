@@ -1,22 +1,25 @@
 'use client'
-import { CbProduct } from "@/utils/contabiliumApi/types/CbProduct";
-import { CbVendor } from "@/utils/contabiliumApi/types/CbVendor";
-import { XlsxConfig } from "@/utils/xlsx/types";
-import { createContext } from "react";
+import { CbProduct } from "@/types/contabiliumApi/types/CbProduct";
+import { CbVendor } from "@/types/contabiliumApi/types/CbVendor";
+import { MatchItems } from "@/types/precios";
+import { XlsxConfig } from "@/types/xlsx/types";
+import { createContext,Dispatch,SetStateAction } from "react";
 
 interface RootContextProps{
     xlsxProducts:any[],
-    setXlsxProducts:Function,
+    setXlsxProducts:Dispatch<SetStateAction<any[]>>,
     cbApiToken:string,
-    setCbApiToken:Function,
+    setCbApiToken:Dispatch<SetStateAction<string>>,
     cbProducts:CbProduct[],
-    setCbProducts:Function,
+    setCbProducts:Dispatch<SetStateAction<CbProduct[]>>,
     cbVendors:CbVendor[],
-    setCbVendors:Function,
+    setCbVendors:Dispatch<SetStateAction<CbVendor[]>>,
     xlsxConfig:XlsxConfig,
-    setXlsxConfig:Function;
-    matchItems:{cbProducts:CbProduct[];xlsxProducts:[subCosto:number,modificacion:number,costo:number,precio:number,ganancia:number,final:number][]};
-    setMatchItems:Function;
+    setXlsxConfig:Dispatch<SetStateAction<XlsxConfig>>;
+    matchItems:MatchItems;
+    clearMatchItems:Function;
+    matchXlsxAndCbProducts:Function;
+    updateMatchItems:Function;
 }
 export const rootContext = createContext({} as RootContextProps);
 

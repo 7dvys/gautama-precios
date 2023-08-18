@@ -6,6 +6,6 @@ export const metadata:Metadata = {
 
 const Home = ()=>{
     return(
-        <></>
+        <>inicio</>
     )}
 export default Home;

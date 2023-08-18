@@ -5,8 +5,8 @@ const opciones:[nombre:string,descripcion:string][] = [
 
 const abrirOpciones = ()=>{
     opciones.forEach(([nombre,descripcion])=>{
-        const defaultValue = localStorage.getItem(nombre)?? '';
-        const newValue = prompt(descripcion,defaultValue)?? '';
+        // const defaultValue = localStorage.getItem(nombre)?? '';
+        const newValue = prompt(descripcion)?? '';
         newValue && localStorage.setItem(nombre,newValue);
     })
     localStorage.removeItem('cbApiToken');

@@ -1,15 +1,10 @@
-import { CbProduct } from "./types"
+import { MatchItems } from "@/types/precios"
+import { CbProduct } from "../../types/contabiliumApi/types"
 import { cbFetch } from "@/utils/contabiliumApi"
 
-const updateProducts = async ({matchItems,apiToken}:{matchItems:{cbProducts:CbProduct[],xlsxProducts:[subCosto:number,modificacion:number,costo:number,precio:number,ganancia:number,final:number][]},apiToken:string})=>{
-    const config = (id:string)=>({
-        endpoint:`/api/conceptos/?id=${id}`,
-        method:"PUT" as "PUT",
-        token:apiToken,
-    })
-
+const updateProducts = async ({matchItems,apiToken}:{matchItems:MatchItems,apiToken:string})=>{
     matchItems.cbProducts.forEach((product,index)=>{
-        const [subCosto,modificacion,costo,precio,ganancia,final] = matchItems.xlsxProducts[index]
+        const {costo,precio,ganancia,final} = matchItems.xlsxProducts[index]
         const newProduct = {...product,
             CostoInterno:Number(costo),
             Precio:Number(precio),
@@ -26,7 +21,6 @@ const updateProducts = async ({matchItems,apiToken}:{matchItems:{cbProducts:CbPr
             token:apiToken,
             body:JSON.stringify(newProduct)
         }
-        console.log({product,newProduct,config})
         
         cbFetch(config)
     })

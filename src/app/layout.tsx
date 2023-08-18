@@ -3,11 +3,14 @@
 import '@/assets/styles/globals.css'
 import { Nav } from '@/components'
 import { abrirOpciones,checkearOpciones,storeCbApiToken } from '@/utils'
-import { useEffect,useRef, useState} from 'react' 
+import { useEffect, useState} from 'react' 
 import { rootContext} from '@/context'
-import { CbProduct } from '@/utils/contabiliumApi/types'
+import { CbProduct } from '@/types/contabiliumApi/types'
 import { getProducts, getVendors, getUser } from '@/utils/contabiliumApi'
-import { CbVendor } from '@/utils/contabiliumApi/types/CbVendor'
+import { CbVendor } from '@/types/contabiliumApi/types/CbVendor'
+import { XlsxConfig } from '@/types/xlsx/types'
+import { MatchItems } from '@/types/precios'
+import { useMatchItems } from '@/hooks'
 
 export default function RootLayout({
     children,
@@ -15,15 +18,25 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
 
-    const [cbApiToken,setCbApiToken] = useState('');
+    const [cbApiToken,setCbApiToken] = useState<string>('');
     const [cbProducts,setCbProducts] = useState<CbProduct[]>([])
     const [cbVendors,setCbVendors] = useState<CbVendor[]>([])
     const [xlsxProducts,setXlsxProducts] = useState<any[]>([])
-    const [matchItems,setMatchItems]= useState<{cbProducts:CbProduct[];xlsxProducts:[subCosto:number,modificacion:number,costo:number,precio:number,ganancia:number,final:number][]}>({cbProducts:[],xlsxProducts:[]})
-    const [xlsxConfig,setXlsxConfig] = useState({idProveedor:'none',colCodigo:0,colTitulo:1,colCosto:2,iva:21,ivaIncluido:'no',ganancia:40,modificacion:0,afecta:'si'})
 
+    const initialXlsxConfig = {
+        idProveedor:'none',
+        colCodigo:0,
+        colCosto:2,
+        iva:21,
+        ivaIncluido:'no',
+        ganancia:0,
+        modificacion:0,
+        afecta:'si'
+    };
 
-    
+    const [xlsxConfig,setXlsxConfig] = useState<XlsxConfig>(initialXlsxConfig);
+    const {matchItems,clearMatchItems,matchXlsxAndCbProducts,updateMatchItems} = useMatchItems({cbProducts,xlsxConfig,xlsxProducts})
+
     useEffect(()=>{
         checkearOpciones();
         storeCbApiToken(setCbApiToken);
@@ -42,7 +55,7 @@ export default function RootLayout({
             <body>
                 <div onClick={abrirOpciones} className='options'>opciones</div>
                 <main className='main'>
-                    <rootContext.Provider value={{cbProducts,setCbProducts,cbApiToken,setCbApiToken,xlsxProducts,setXlsxProducts,cbVendors,setCbVendors,xlsxConfig,setXlsxConfig,matchItems,setMatchItems}}>
+                    <rootContext.Provider value={{cbProducts,setCbProducts,cbApiToken,setCbApiToken,xlsxProducts,setXlsxProducts,cbVendors,setCbVendors,xlsxConfig,setXlsxConfig,matchItems,clearMatchItems,matchXlsxAndCbProducts,updateMatchItems}}>
                         <Nav/>
                         <div className='tool'>
                             {children}
