@@ -4,7 +4,7 @@ interface XlsxConfig{
     colCosto:number,
     iva:number,
     ivaIncluido:string,
-    ganancia:number,
+    rentabilidad:number,
     modificacion:number,
     afecta:string
 }

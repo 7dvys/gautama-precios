@@ -1,16 +1,15 @@
 import { MatchItems } from "@/types/precios"
-import { CbProduct } from "../../types/contabiliumApi/types"
 import { cbFetch } from "@/utils/contabiliumApi"
 
 const updateProducts = async ({matchItems,apiToken}:{matchItems:MatchItems,apiToken:string})=>{
     matchItems.cbProducts.forEach((product,index)=>{
-        const {costo,precio,ganancia,final} = matchItems.xlsxProducts[index]
+        const {costo,precio,rentabilidad,final,iva} = matchItems.xlsxProducts[index]
         const newProduct = {...product,
-            CostoInterno:Number(costo),
-            Precio:Number(precio),
-            Rentabilidad:Number(ganancia),
-            PrecioFinal:Number(final),
-            Iva:21,
+            CostoInterno:costo,
+            Precio:precio,
+            Rentabilidad:rentabilidad,
+            PrecioFinal:final,
+            Iva:iva,
             Tipo:"P",
             Estado:"A"
         }

@@ -2,11 +2,12 @@ import { CbProduct } from "../contabiliumApi/types";
 
 type MatchItemXlsxProduct = {
     subCosto:number,
-    modificacion:number,
     costo:number,
     precio:number,
-    ganancia:number,
-    final:number}
+    rentabilidad:number,
+    final:number,
+    iva:number
+}
 
 interface MatchItems{
     cbProducts:CbProduct[];

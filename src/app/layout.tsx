@@ -24,11 +24,11 @@ export default function RootLayout({
 
     const initialXlsxConfig = {
         idProveedor:'none',
-        colCodigo:0,
-        colCosto:2,
+        colCodigo:1,
+        colCosto:3,
         iva:0,
         ivaIncluido:'no',
-        ganancia:0,
+        rentabilidad:0,
         modificacion:0,
         afecta:'si'
     };

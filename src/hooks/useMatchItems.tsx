@@ -18,9 +18,9 @@ const useMatchItems = ({cbProducts,xlsxProducts,xlsxConfig}:{cbProducts:CbProduc
         const serializedCbProducts = serializeArray(cbProducts,"Codigo")
         const matchItems = xlsxProducts.reduce((acc,currentXlsxProduct)=>{
     
-          const xlsxProductCodigo = currentXlsxProduct[xlsxConfig.colCodigo-1];
+          const xlsxProductCodigo = currentXlsxProduct[xlsxConfig.colCodigo-1].toString();
           if(serializedCbProducts[xlsxProductCodigo]){  
-            const xlsxCosto = Number(currentXlsxProduct[xlsxConfig.colCosto-1])
+            const xlsxCosto = Number(currentXlsxProduct[xlsxConfig.colCosto-1]);
             const cbProduct:CbProduct = serializedCbProducts[xlsxProductCodigo]; 
             const rentabilidadPrevia = Number(cbProduct.Rentabilidad);
             const ivaPrevio = Number(cbProduct.Iva);
@@ -35,13 +35,18 @@ const useMatchItems = ({cbProducts,xlsxProducts,xlsxConfig}:{cbProducts:CbProduc
     }
 
     const updateMatchItems = (index:number)=>{
-        const {subCosto,modificacion,costo,final} = matchItems.xlsxProducts[index];
-        const ivaFactor = 1+xlsxConfig.iva/100;
-        const nuevoFinal = Number(prompt('nuevo final',final.toString())??final.toFixed(2));
-        const nuevoPrecio = Number((nuevoFinal/ivaFactor).toFixed(2));
-        const nuevaGanancia = Number(((nuevoFinal/(Number(costo)*ivaFactor)-1)*100).toFixed(2))
+        const currentMatchItem = matchItems.xlsxProducts[index];
+        const {costo,final,iva} = currentMatchItem;
+        const ivaFactor = 1+iva/100;
+        const nuevoFinal = Number(prompt('nuevo final',final.toString())??final)
+        const nuevoPrecio = nuevoFinal/ivaFactor;
+        const nuevaRentalibidad = (nuevoFinal/(costo*ivaFactor)-1)*100
         
-        const updated:MatchItemXlsxProduct = {subCosto,modificacion,costo,precio:nuevoPrecio,ganancia:nuevaGanancia,final:nuevoFinal};
+        const updated:MatchItemXlsxProduct = {...currentMatchItem,
+          precio:Number(nuevoPrecio.toFixed()),
+          rentabilidad:Number(nuevaRentalibidad.toFixed()),
+          final:Number(nuevoFinal.toFixed())};
+
         matchItems.xlsxProducts[index]=updated;
     
         setMatchItems({...matchItems})

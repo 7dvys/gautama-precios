@@ -1,11 +1,11 @@
 import { Metadata } from 'next'
 export const metadata:Metadata = {
-    title: 'ZPL printer',
-    description: 'Genera etiquetas con ZPL',
+    title: 'ZPL Precios',
+    description: 'Controla tus precios!!',
 }
 
-const Home = ()=>{
+const Home:React.FC = ()=>{
     return(
-        <>inicio</>
+        <></>
     )}
 export default Home;

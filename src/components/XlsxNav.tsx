@@ -30,7 +30,7 @@ const XlsxNav:React.FC = ()=>{
     }
 
     const ButtonOptions:React.FC = ()=>{
-        const buttonTitle = `codigo|titulo|costo: ${xlsxConfig.colCodigo}|${xlsxConfig.colCosto}\niva: ${xlsxConfig.iva}\niva incluido: ${xlsxConfig.ivaIncluido}\nganancia: ${xlsxConfig.ganancia}\nmodificacion: ${xlsxConfig.modificacion}\nafecta a final: ${xlsxConfig.afecta}\nproveedor:${xlsxConfig.idProveedor}`
+        const buttonTitle = `codigo|titulo|costo: ${xlsxConfig.colCodigo}|${xlsxConfig.colCosto}\niva: ${xlsxConfig.iva}\niva incluido: ${xlsxConfig.ivaIncluido}\nrentabilidad: ${xlsxConfig.rentabilidad}\nmodificacion: ${xlsxConfig.modificacion}\nafecta a final: ${xlsxConfig.afecta}\nproveedor:${xlsxConfig.idProveedor}`
 
         if(xlsxFile.Sheets)
         return(
@@ -59,7 +59,7 @@ const XlsxNav:React.FC = ()=>{
 
     const changeSheetHandler = (event:ChangeEvent<HTMLSelectElement>)=>{
         if(event.target.value !='none'){
-            const {colCodigo,colCosto} = promptCols()
+            const {colCodigo,colCosto} = promptCols(xlsxConfig)
             setXlsxConfig({...xlsxConfig,colCodigo:colCodigo,colCosto:colCosto})
         }
         setSelectedSheet(event.target.value);

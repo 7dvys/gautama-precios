@@ -35,12 +35,11 @@ const TableMatchItems:React.FC<{matchItems:MatchItems,updateMatchItems:Function,
       </Table>
       <Table trHead={['costo','precio','final']}>
       {matchItems.xlsxProducts.map((item:MatchItemXlsxProduct,index)=>{
-        console.log(item)
             return(
               <tr key={index}>
-                <td title={`costo: ${item.subCosto}+${item.modificacion}%(modificacion)`}>{item.costo}</td>
-                <td title={`precio: costo+${item.ganancia}%(ganacia)`}>{item.precio}</td>
-                <td onClick={()=>{updateMatchItems(index)}}  title={`final: precio+${xlsxConfig.iva}%(iva)`}>{item.final}</td>
+                <td title={`costo: ${item.subCosto}+${xlsxConfig.modificacion}%(modificacion)`}>{item.costo}</td>
+                <td title={`precio: costo+${item.rentabilidad}%(ganacia)`}>{item.precio}</td>
+                <td onClick={()=>{updateMatchItems(index)}}  title={`final: precio+${item.iva}%(iva)`}>{item.final}</td>
               </tr>
             )
           })}
